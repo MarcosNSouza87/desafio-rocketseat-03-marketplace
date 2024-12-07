@@ -3,9 +3,6 @@ import {
 	BottomTabNavigationProp,
 } from '@react-navigation/bottom-tabs';
 
-import HomeSvg from '@assets/home.svg';
-import HistorySvg from '@assets/history.svg';
-
 import { gluestackUIConfig } from '../../config/gluestack-ui.config';
 import { Platform, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import { HomeRoutes } from './home.routes';
