@@ -122,7 +122,7 @@ export function AdsCreateEditScreen() {
 						</GS.Checkbox>
 					</GS.VStack>
 				</GS.CheckboxGroup>
-				<GS.VStack mt="$10" gap="$4">
+				<GS.VStack mt="$10" gap="$4" mb='$7'>
 					<Button title="Avançar" onPress={() => navigate('home')} />
 					<Button title="Cancelar" type="outline" onPress={goBack} />
 				</GS.VStack>

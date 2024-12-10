@@ -8,6 +8,7 @@ import { FlatList, TouchableOpacity } from 'react-native';
 import { CardAds } from '@components/CardAds';
 import { Search, SlidersVertical, X, Check } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
+import { Button } from '@components/Button';
 
 export function HomeScreen() {
 	const [data, setData] = useState<string[]>(['bicicleat', 'biciclos', 'bki']);
@@ -23,6 +24,12 @@ export function HomeScreen() {
 		console.log('filter');
 		setShowActionsheet(!showActionsheet);
 	}
+	async function handleMoreFilter() {
+		console.log('filter');
+		setShowActionsheet(!showActionsheet);
+	}
+
+	
 	async function handleGoDetails() {
 		console.log('details');
 		navigate('adsDetails', { AdsId: '1' });
@@ -92,17 +99,17 @@ export function HomeScreen() {
 			/>
 			{showActionsheet && (
 				<GS.Actionsheet
+					style={{backgroundColor:'#00000088'}}
 					isOpen={showActionsheet}
 					onClose={() => setShowActionsheet(false)}
 				>
-					<GS.ActionsheetBackdrop />
-					<GS.ActionsheetContent>
+					<GS.ActionsheetContent bg='$gray600'>
 						<GS.ActionsheetDragIndicatorWrapper>
 							<GS.ActionsheetDragIndicator />
 						</GS.ActionsheetDragIndicatorWrapper>
-						<GS.ActionsheetItem>
+						<GS.ActionsheetItem bg='$gray600'>
 							<GS.VStack w="$full">
-								<GS.HStack alignItems="center" pb="$10">
+								<GS.HStack alignItems="center" pb="$7">
 									<GS.Heading flex={1}>Filtrar anúncios</GS.Heading>
 									<GS.Pressable onPress={() => setShowActionsheet(false)}>
 										<GS.Icon as={X} />
@@ -126,7 +133,7 @@ export function HomeScreen() {
 									<GS.Text size="sm">{aceptReplace ? 'Sim' : 'Não'}</GS.Text>
 								</GS.HStack>
 
-								<GS.Heading mt="$2" mb="$3" fontSize="$md">
+								<GS.Heading mt="$2" mb="$3" fontSize="$sm">
 									Meios de pagamento aceitos
 								</GS.Heading>
 
@@ -136,7 +143,7 @@ export function HomeScreen() {
 										setPayments(keys);
 									}}
 								>
-									<GS.VStack space="md" mb="$24">
+									<GS.VStack space="md" mb="$16">
 										<GS.Checkbox value="boleto" alignItems="center">
 											<GS.CheckboxIndicator>
 												<GS.CheckboxIcon as={Check} color="$gray600" />
@@ -179,6 +186,12 @@ export function HomeScreen() {
 										</GS.Checkbox>
 									</GS.VStack>
 								</GS.CheckboxGroup>
+								<GS.VStack mb='$10'>
+									<Button title='Aplicar filtros' mb='$3' onPress={handleMoreFilter} />
+									<Button type='outline' title='Resetar filtros' 
+									onPress={handleMoreFilter}
+									/>
+								</GS.VStack>
 							</GS.VStack>
 						</GS.ActionsheetItem>
 					</GS.ActionsheetContent>
