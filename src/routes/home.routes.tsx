@@ -4,10 +4,12 @@ import {
 } from '@react-navigation/native-stack';
 import { HomeScreen } from '@screens/app/Home';
 import { AdsDetailsScreen } from '@screens/app/AdsDetails';
+import { AdsCreateEditScreen } from '@screens/app/AdsCreateEdit';
 
 type HomeRoutes = {
 	homeStack: undefined;
-	adsDetailsHome: {AdsId: string};
+	adsDetails: {AdsId: string};
+	adsCreateEdit: {ads?: any};
 };
 
 export type HomeNavigatorRoutesProps = NativeStackNavigationProp<HomeRoutes>;
@@ -22,7 +24,8 @@ export function HomeRoutes() {
 			}}
 		>
 			<Screen name="homeStack" component={HomeScreen} />
-			<Screen name="adsDetailsHome" component={AdsDetailsScreen} />
+			<Screen name="adsDetails" component={AdsDetailsScreen} />
+			<Screen name="adsCreateEdit" component={AdsCreateEditScreen} />
 		</Navigator>
 	);
 }

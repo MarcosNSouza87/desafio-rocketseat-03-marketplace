@@ -24,7 +24,9 @@ export function Button({
 					? '$gray100'
 					: type === 'outline'
 					? '$gray500'
-					: '$blue500'
+					: type === 'secondary'
+					? '$blue500'
+					: '$white'
 			}
 			borderWidth="$0"
 			rounded="$sm"
@@ -37,7 +39,11 @@ export function Button({
 			) : (
 				<>
 					{icon && (
-						<GS.Icon as={icon} mr='$2' color={type === 'outline' ? '$gray200' : '$white'}/>
+						<GS.Icon
+							as={icon}
+							mr="$2"
+							color={type === 'outline' ? '$gray200' : '$white'}
+						/>
 					)}
 					<GS.Text
 						color={type === 'outline' ? '$gray200' : '$white'}

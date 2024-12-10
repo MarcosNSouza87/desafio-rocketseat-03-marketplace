@@ -3,14 +3,15 @@ import CardExample from '@assets/cardExample.png';
 import defaultUserPhotoImg from '@assets/userPhotoDefault.png';
 import { IdentifyStatus } from './IdentifyStatus';
 import { TouchableOpacity } from 'react-native';
+import { ComponentProps } from 'react';
 
-type Props = {
+type Props = ComponentProps<typeof TouchableOpacity> &{
 	isOwnUser: boolean;
 };
 
-export function CardAds({ isOwnUser = false }: Props) {
+export function CardAds({ isOwnUser = false, ...rest }: Props) {
 	return (
-		<TouchableOpacity style={{ width: '47%',marginRight: 18, }}>
+		<TouchableOpacity style={{ width: '47%',marginRight: 18, }} {...rest}>
 			<GS.VStack>
 				<GS.ImageBackground
 					source={CardExample}
@@ -23,7 +24,7 @@ export function CardAds({ isOwnUser = false }: Props) {
 					<GS.HStack w="$full">
 						<GS.Box flex={1}>
 							{!isOwnUser && (
-								<GS.Image source={defaultUserPhotoImg} width={28} height={28} />
+								<GS.Image source={defaultUserPhotoImg} width={28} height={28} alt="Logo"/>
 							)}
 						</GS.Box>
 

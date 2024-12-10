@@ -5,11 +5,12 @@ export declare global {
 	namespace ReactNavigation {
 		interface RootParamList {
 			home: undefined;
+			homeStack: undefined;
 			signIn: undefined;
 			signOut: undefined;
-			adsDetails: undefined;
+			adsDetails: {AdsId: string};
 			adsUser: undefined;
-			adsCreateEdit: undefined;
+			adsCreateEdit: {AdsId?: string};
 		}
 	}
 }
