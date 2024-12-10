@@ -5,19 +5,27 @@ type Props = ComponentProps<typeof GS.Button> & {
 	title: string;
 	type?: 'primary' | 'secondary' | 'outline';
 	isLoading?: boolean;
+	icon?: any;
 };
 
 export function Button({
 	title,
 	type = 'primary',
 	isLoading = false,
+	icon,
 	...rest
 }: Props) {
 	return (
 		<GS.Button
 			w="$full"
 			h="$12"
-			bg={type === 'primary' ? '$gray100' : type === 'outline' ? '$gray500' : '$blue500' }
+			bg={
+				type === 'primary'
+					? '$gray100'
+					: type === 'outline'
+					? '$gray500'
+					: '$blue500'
+			}
 			borderWidth="$0"
 			rounded="$sm"
 			// $active-bg={type === 'primary' || type === 'outline' ? '$gray100' : '$blue500' }
@@ -27,13 +35,18 @@ export function Button({
 			{isLoading ? (
 				<GS.ButtonSpinner color="$white" />
 			) : (
-				<GS.Text
-					color={type === 'outline' ? '$gray200' : '$white'}
-					fontFamily="$heading"
-					fontSize="$md"
-				>
-					{title}
-				</GS.Text>
+				<>
+					{icon && (
+						<GS.Icon as={icon} mr='$2' color={type === 'outline' ? '$gray200' : '$white'}/>
+					)}
+					<GS.Text
+						color={type === 'outline' ? '$gray200' : '$white'}
+						fontFamily="$heading"
+						fontSize="$sm"
+					>
+						{title}
+					</GS.Text>
+				</>
 			)}
 		</GS.Button>
 	);

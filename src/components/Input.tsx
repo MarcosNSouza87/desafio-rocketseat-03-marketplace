@@ -44,15 +44,15 @@ export function Input({
 					secureTextEntry={isSecurity ? show ? true: false: false}
 					{...rest}
 				/>
-				{isSecurity && <GS.Pressable
+				{isSecurity && <GS.InputSlot
 					bg='$gray700'
 					paddingHorizontal="$4"
 					alignItems="center"
 					justifyContent="center"
 					onPress={() => setShow(!show)}
 				>
-					<GS.Icon as={show ? Eye : EyeOff} size="md" />
-				</GS.Pressable>}
+					<GS.InputIcon as={show ? Eye : EyeOff} size="md" />
+				</GS.InputSlot>}
 			</GS.Input>
 			<GS.FormControlError>
 				<GS.FormControlErrorText color="$red500">

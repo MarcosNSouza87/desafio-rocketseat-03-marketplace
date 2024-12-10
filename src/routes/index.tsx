@@ -12,7 +12,7 @@ import { AuthRoutes } from './auth.routes';
 export function Routes() {
 	const theme = DefaultTheme;
 
-	theme.colors.background = gluestackUIConfig.tokens.colors.gray700;
+	theme.colors.background = gluestackUIConfig.tokens.colors.gray600;
 
 	//const contextData = useContext(AuthContext);
 
@@ -23,9 +23,9 @@ export function Routes() {
 	// }
 
 	return (
-		<Box flex={1} bg="$gray700">
+		<Box flex={1} bg="$gray600">
 			<NavigationContainer>
-				<AuthRoutes />
+				<AppRoutes />
 				{/* {user.id ? <AppRoutes /> : <AuthRoutes />} */}
 			</NavigationContainer>
 		</Box>
