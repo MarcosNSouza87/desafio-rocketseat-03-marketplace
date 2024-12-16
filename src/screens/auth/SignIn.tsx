@@ -9,6 +9,8 @@ import { ScrollView } from 'react-native';
 import { Controller, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useAuth } from '@hooks/useAuth';
+import { AppError } from '@utils/AppError';
 
 type FormDataProps = {
 	email: string;
@@ -25,7 +27,7 @@ const signInSchema = yup.object({
 
 export function SignIn() {
 	const { navigate } = useNavigation<AuthNavigatorRoutesProps>();
-
+	const { signIn } = useAuth();
 	const [isLoading, setIsLoading] = useState(false);
 
 	const {
@@ -40,8 +42,30 @@ export function SignIn() {
 		resolver: yupResolver(signInSchema),
 	});
 
-	function handleSignIn () {
-
+	async function handleSignIn ({email , password}: FormDataProps) {
+		try {
+			setIsLoading(true);
+			const promisse = await signIn(email, password);
+			console.log(promisse);
+		} catch (error) {
+			const isAppError = error instanceof AppError;
+			console.log(error)
+			const title = isAppError
+				? error.message
+				: 'Não foi possível entrar. Tente novamente';
+			setIsLoading(false);
+			// GS.toast.show({
+			// 	placement: 'top',
+			// 	render: ({ id }) => (
+			// 		<ToastMessage
+			// 			id={id}
+			// 			action="error"
+			// 			title={title}
+			// 			onClose={() => toast.close(id)}
+			// 		/>
+			// 	),
+			// });
+		}
 	}
 
 	return (
@@ -93,7 +117,7 @@ export function SignIn() {
 							/>
 						)}
 					/>
-					<Button title="Entrar" type="secondary" onPress={handleSubmit(handleSignIn)} mt="$4" />
+					<Button title="Entrar" type="secondary" onPress={handleSubmit(handleSignIn)} mt="$4" isLoading={isLoading}/>
 				</GS.VStack>
 			</GS.Center>
 			<GS.Center

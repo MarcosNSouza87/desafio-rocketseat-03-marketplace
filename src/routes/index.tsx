@@ -1,9 +1,9 @@
 import { Box } from '@gluestack-ui/themed';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { gluestackUIConfig } from '../../config/gluestack-ui.config';
-//import { AuthContext } from '@contexts/AuthContext';
-//import { useContext } from 'react';
-// import { useAuth } from '@hooks/useAuth';
+import { AuthContext } from '@contexts/AuthContext';
+import { useContext } from 'react';
+import { useAuth } from '@hooks/useAuth';
 import { Loading } from '@components/Loading';
 
 import { AppRoutes } from './app.routes';
@@ -16,17 +16,15 @@ export function Routes() {
 
 	//const contextData = useContext(AuthContext);
 
-	// const { user,isLoadingUserStorageData } = useAuth();
-
-	// if(isLoadingUserStorageData){
-	// 	return <Loading />
-	// }
+	const { user,isLoadingUserStorageData } = useAuth();
+	if(isLoadingUserStorageData){
+		return <Loading />
+	}
 
 	return (
 		<Box flex={1} bg="$gray600">
 			<NavigationContainer>
-				<AppRoutes />
-				{/* {user.id ? <AppRoutes /> : <AuthRoutes />} */}
+				{user.id ? <AppRoutes /> : <AuthRoutes />}
 			</NavigationContainer>
 		</Box>
 	);

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import * as GS from '@gluestack-ui/themed';
 import { HeaderApp } from '@components/HeaderApp';
@@ -7,15 +7,20 @@ import { Tag, ArrowRight } from 'lucide-react-native';
 import { FlatList, TouchableOpacity } from 'react-native';
 import { CardAds } from '@components/CardAds';
 import { Search, SlidersVertical, X, Check } from 'lucide-react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { Button } from '@components/Button';
+import { useAuth } from '@hooks/useAuth';
+import { api } from '@services/api';
 
 export function HomeScreen() {
+	const [isLoading, setIsLoading] = useState(false);
 	const [data, setData] = useState<string[]>(['bicicleat', 'biciclos', 'bki']);
 	const { navigate } = useNavigation();
 	const [showActionsheet, setShowActionsheet] = React.useState(false);
 	const [aceptReplace, setAceptReplace] = React.useState(false);
 	const [payments, setPayments] = React.useState(['']);
+
+	const { user } = useAuth();
 
 	async function handleSearch() {
 		console.log('search');
@@ -29,11 +34,31 @@ export function HomeScreen() {
 		setShowActionsheet(!showActionsheet);
 	}
 
+
 	
 	async function handleGoDetails() {
 		console.log('details');
 		navigate('adsDetails', { AdsId: '1' });
 	}
+
+
+	async function fetchProducts() {
+		try {
+			setIsLoading(true);
+			const resp = await api.get('/products');
+			console.log(resp.data)
+			setData(resp.data);
+			
+		} catch (error) {
+			
+		}
+	}
+
+	useFocusEffect(
+		useCallback(() => {
+			fetchProducts();
+		}, []),
+	);
 
 	return (
 		<GS.VStack flex={1} paddingHorizontal="$7">

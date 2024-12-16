@@ -10,6 +10,7 @@ import { AdsUserRoutes } from './adsUser.routes';
 import { Icon } from '@gluestack-ui/themed';
 
 import { LayoutGrid, Tag, LogOut } from 'lucide-react-native';
+import { useAuth } from '@hooks/useAuth';
 
 type AppRoutes = {
 	home: undefined;
@@ -23,10 +24,10 @@ const { Navigator, Screen } = createBottomTabNavigator<AppRoutes>();
 
 export function AppRoutes() {
 	const { tokens } = gluestackUIConfig;
+	const { signOut } = useAuth();
 
-	const handleLogout = () => {
-		// Adicione aqui a lógica de logout
-		console.log('Logout efetuado!');
+	async function handleLogout () {
+		await signOut();
 	};
 
 	return (

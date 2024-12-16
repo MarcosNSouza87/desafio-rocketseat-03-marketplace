@@ -21,7 +21,7 @@ export function AdsUserScreen() {
 				<GS.Heading flex={1} textAlign="center">
 					Meus anúncios
 				</GS.Heading>
-				<GS.Pressable>
+				<GS.Pressable onPress={() => navigate('adsCreateEdit',{})}>
 					<GS.Icon as={Plus} size="xl" />
 				</GS.Pressable>
 			</GS.HStack>

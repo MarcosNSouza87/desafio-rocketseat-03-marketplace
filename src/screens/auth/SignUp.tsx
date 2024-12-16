@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as GS from '@gluestack-ui/themed';
 import LogoSVG from '@assets/logo.svg';
 import { Input } from '@components/Input';
@@ -11,8 +11,15 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 import { useForm, Controller } from 'react-hook-form';
 
-import { Camera, Edit2 } from 'lucide-react-native';
+import { Edit2 } from 'lucide-react-native';
 import { gluestackUIConfig } from '../../../config/gluestack-ui.config';
+import { useAuth } from '@hooks/useAuth';
+import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
+import { ToastMessage } from '@components/ToastMessage';
+import { api } from '@services/api';
+import { UserPhoto } from '@components/UserPhoto';
+import userPhotoDefault from '@assets/userPhotoDefault.png';
 
 type userImageSelectedProps = {
 	selected: boolean;
@@ -26,14 +33,14 @@ type userImageSelectedProps = {
 type FormDataProps = {
 	name: string;
 	email: string;
-	phoneNumber: string;
+	tel: string;
 	password: string;
 	password_confirm: string;
 };
 
 const signUpSchema = yup.object({
 	name: yup.string().required('Informe o nome.'),
-	phoneNumber: yup.string().required('Informe seu número.'),
+	tel: yup.string().required('Informe seu número.'),
 	email: yup.string().required('Informe o e-mail.').email('E-mail inválido.'),
 	password: yup
 		.string()
@@ -48,6 +55,9 @@ const signUpSchema = yup.object({
 export function SignUp() {
 	const { navigate } = useNavigation<AuthNavigatorRoutesProps>();
 	const [isLoading, setIsLoading] = useState(false);
+	const [userPhoto, setUserPhoto] = useState<any>();
+	const { user, signUp } = useAuth();
+	const toast = GS.useToast();
 
 	const { tokens } = gluestackUIConfig;
 	const iconSize = tokens.space[2];
@@ -61,15 +71,77 @@ export function SignUp() {
 		defaultValues: {
 			name: '',
 			email: '',
-			phoneNumber: '',
+			tel: '',
 			password: '',
 			password_confirm: '',
 		},
 		resolver: yupResolver(signUpSchema),
 	});
 
-	function handleSignUp() {}
-	function handleAddAvatar() {}
+	async function handleSignUp({ name, email, password, tel }: FormDataProps) {
+		try {
+			setIsLoading(true);
+
+			const avatar = userPhoto ? userPhoto : undefined;
+			await signUp({ email, name, tel, password, avatar });
+		} catch (error) {
+			console.log('error => ', error);
+		} finally {
+			setIsLoading(false);
+		}
+	}
+
+	async function handleAddAvatar() {
+		try {
+			const photoSelected = await ImagePicker.launchImageLibraryAsync({
+				mediaTypes: ['images'],
+				quality: 1,
+				aspect: [4, 4],
+				allowsEditing: true,
+			});
+			if (photoSelected.canceled) {
+				return;
+			}
+
+			const photoUri = photoSelected.assets[0].uri;
+			if (photoUri) {
+				const photoInfo = (await FileSystem.getInfoAsync(photoUri)) as {
+					size: number;
+				};
+
+				if (photoInfo.size && photoInfo.size / 1024 / 1024 > 5) {
+					return toast.show({
+						placement: 'top',
+						render: ({ id }) => (
+							<ToastMessage
+								id={id}
+								action="error"
+								title="Essa imagem é muito grande. Escolha uma de até 5Mb."
+								onClose={() => toast.close(id)}
+							/>
+						),
+					});
+				}
+				const fileExtension = photoSelected.assets[0].uri.split('.').pop();
+				const photoFile = {
+					name: `${user.name}.${fileExtension}`.toLowerCase(),
+					uri: photoSelected.assets[0].uri,
+					type: `${photoSelected.assets[0].type}/${fileExtension}`,
+				} as any;
+
+				//const userPhotoUploadForm: any = new FormData();
+
+				//userPhotoUploadForm.avatar = photoFile;
+
+				setUserPhoto(photoFile);
+			}
+			if (photoSelected.canceled) {
+				return;
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	}
 
 	return (
 		<GS.ScrollView
@@ -94,16 +166,19 @@ export function SignUp() {
 				</GS.Text>
 				<TouchableOpacity style={{ marginTop: 15 }} onPress={handleAddAvatar}>
 					<GS.Box
-						w="$20"
-						h="$20"
 						bg="$gray500"
 						rounded="$full"
-						borderColor="$blue500"
-						borderWidth="$2"
 						alignItems="center"
 						justifyContent="center"
+						borderWidth={'$4'}
+						borderColor={'$blue500'}
 					>
-						<Camera color={tokens.colors.gray400} size={38} />
+						<UserPhoto
+							source={userPhoto ? userPhoto : userPhotoDefault}
+							alt="Foto do usuário"
+							size="md"
+							resizeMode="cover"
+						/>
 					</GS.Box>
 					<GS.Box
 						w="$8"
@@ -147,13 +222,13 @@ export function SignUp() {
 					/>
 					<Controller
 						control={control}
-						name="phoneNumber"
+						name="tel"
 						render={({ field: { onChange, value } }) => (
 							<Input
 								placeholder="Telefone"
 								onChangeText={onChange}
 								value={value}
-								errorMessage={errors.phoneNumber?.message}
+								errorMessage={errors.tel?.message}
 							/>
 						)}
 					/>

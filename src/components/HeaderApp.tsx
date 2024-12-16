@@ -11,6 +11,8 @@ import { Pencil, Plus } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import { ArrowLeft, PencilLine } from 'lucide-react-native';
+import { useAuth } from '@hooks/useAuth';
+import { api } from '@services/api';
 
 type Props = ComponentProps<typeof GS.HStack> & {
 	type?: 'Home' | 'AdsCreate' | 'AdsEdit' | 'AdsShow';
@@ -18,14 +20,16 @@ type Props = ComponentProps<typeof GS.HStack> & {
 
 export function HeaderApp({ type = 'Home', ...rest }: Props) {
 	const { navigate, goBack } = useNavigation();
-
+	const { user } = useAuth();
+	
 	return (
 		<GS.HStack gap="$3" pt="$16" pb="$5" alignItems="center" {...rest}>
 			{type === 'Home' && (
 				<>
 					<UserPhoto
-						source={defaultUserPhotoImg}
+						source={user.avatar ? { uri:`${api.defaults.baseURL}/images/${user.avatar}` } : defaultUserPhotoImg}
 						alt="imagem do usuario"
+						resizeMode='cover'
 						w="$12"
 						h="$12"
 					/>
@@ -34,7 +38,7 @@ export function HeaderApp({ type = 'Home', ...rest }: Props) {
 							Boas Vindas,
 						</GS.Text>
 						<GS.Heading color="$gray100" fontSize="$md">
-							{'user.name !'}
+							{user.name.substring(0,14)}
 						</GS.Heading>
 					</GS.VStack>
 					<GS.Box w="$35">
