@@ -8,9 +8,9 @@ export declare global {
 			homeStack: undefined;
 			signIn: undefined;
 			signOut: undefined;
-			adsDetails: {AdsId: string};
+			adsDetails: {Ads: ProductDTO};
 			adsUser: undefined;
-			adsCreateEdit: {AdsId?: string};
+			adsCreateEdit: {Ads?: ProductDTO};
 		}
 	}
 }

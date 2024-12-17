@@ -8,8 +8,8 @@ import { AdsCreateEditScreen } from '@screens/app/AdsCreateEdit';
 
 type HomeRoutes = {
 	adsUserStack: undefined;
-	adsDetails: {AdsId: string};
-	adsCreateEdit: {AdsId?: string};
+	adsDetails: {Ads: any};
+	adsCreateEdit: {Ads?: any};
 };
 
 export type HomeNavigatorRoutesProps = NativeStackNavigationProp<HomeRoutes>;

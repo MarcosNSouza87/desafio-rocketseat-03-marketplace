@@ -11,6 +11,7 @@ import { Icon } from '@gluestack-ui/themed';
 
 import { LayoutGrid, Tag, LogOut } from 'lucide-react-native';
 import { useAuth } from '@hooks/useAuth';
+import { ProductsContextProvider } from '@contexts/ProductsContext';
 
 type AppRoutes = {
 	home: undefined;
@@ -26,57 +27,59 @@ export function AppRoutes() {
 	const { tokens } = gluestackUIConfig;
 	const { signOut } = useAuth();
 
-	async function handleLogout () {
+	async function handleLogout() {
 		await signOut();
-	};
+	}
 
 	return (
-		<Navigator
-			screenOptions={{
-				headerShown: false,
-				tabBarShowLabel: false,
-				tabBarStyle: {
-					backgroundColor: tokens.colors.gray700,
-					borderTopWidth: 1,
-					height: Platform.OS === 'android' ? 'auto' : 86,
-					paddingBottom: tokens.space['6'],
-					paddingTop: tokens.space['4'],
-				},
-			}}
-		>
-			<Screen
-				name="home"
-				component={HomeRoutes}
-				options={{
-					tabBarIcon: ({ focused }) => (
-						<Icon
-							as={LayoutGrid}
-							color={focused ? '$gray100' : '$gray400'}
-							size="xl"
-						/>
-					),
+		<ProductsContextProvider>
+			<Navigator
+				screenOptions={{
+					headerShown: false,
+					tabBarShowLabel: false,
+					tabBarStyle: {
+						backgroundColor: tokens.colors.gray700,
+						borderTopWidth: 1,
+						height: Platform.OS === 'android' ? 'auto' : 86,
+						paddingBottom: tokens.space['6'],
+						paddingTop: tokens.space['4'],
+					},
 				}}
-			/>
-			<Screen
-				name="adsUser"
-				component={AdsUserRoutes}
-				options={{
-					tabBarIcon: ({ focused }) => (
-						<Icon as={Tag} color={focused ? '$gray100' : '$gray400'} size="xl" />
-					),
-				}}
-			/>
-			<Screen
-				name="logout"
-				component={HomeRoutes}
-				options={{
-					tabBarIcon: () => (
-						<TouchableWithoutFeedback onPress={handleLogout}>
-							<Icon as={LogOut} color="$red500" size="xl" />
-						</TouchableWithoutFeedback>
-					),
-				}}
-			/>
-		</Navigator>
+			>
+				<Screen
+					name="home"
+					component={HomeRoutes}
+					options={{
+						tabBarIcon: ({ focused }) => (
+							<Icon
+								as={LayoutGrid}
+								color={focused ? '$gray100' : '$gray400'}
+								size="xl"
+							/>
+						),
+					}}
+				/>
+				<Screen
+					name="adsUser"
+					component={AdsUserRoutes}
+					options={{
+						tabBarIcon: ({ focused }) => (
+							<Icon as={Tag} color={focused ? '$gray100' : '$gray400'} size="xl" />
+						),
+					}}
+				/>
+				<Screen
+					name="logout"
+					component={HomeRoutes}
+					options={{
+						tabBarIcon: () => (
+							<TouchableWithoutFeedback onPress={handleLogout}>
+								<Icon as={LogOut} color="$red500" size="xl" />
+							</TouchableWithoutFeedback>
+						),
+					}}
+				/>
+			</Navigator>
+		</ProductsContextProvider>
 	);
 }

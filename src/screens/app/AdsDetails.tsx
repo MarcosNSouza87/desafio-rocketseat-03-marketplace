@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import * as GS from '@gluestack-ui/themed';
 import { HeaderApp } from '@components/HeaderApp';
@@ -18,13 +18,51 @@ import {
 	MessageCircleReply,
 } from 'lucide-react-native';
 import { Button } from '@components/Button';
+import { useRoute } from '@react-navigation/native';
+import { useAuth } from '@hooks/useAuth';
+
+type RouteParamsProps = {
+	Ads: any;
+};
+
+type IpayMethod = {
+	key: string;
+	name: string;
+	icon: any;
+};
 
 export function AdsDetailsScreen() {
 	const [data, setData] = useState([P1, P2, P3]);
 
 	const { width } = Dimensions.get('window');
 
+	const basePaymentMethods: IpayMethod[] = [
+		{ key: 'boleto', name: 'Boleto', icon: ScanBarcode },
+		{ key: 'pix', name: 'Pix', icon: QrCode },
+		{ key: 'cash', name: 'Dinheiro', icon: Banknote },
+		{ key: 'card', name: 'Cartão de Crédito', icon: Landmark },
+		{ key: 'deposit', name: 'Depósito Bancário', icon: CreditCard },
+	];
+
+	const [payMethod, setPayMethod] = useState<IpayMethod[]>([]);
+
+	const route = useRoute();
+	const { Ads } = route.params as RouteParamsProps;
+	const { user } = useAuth();
 	const [scrollIndex, setScrollIndex] = useState(0); // Índice da imagem visível
+
+	useEffect(() => {
+		console.log(Ads.user_id === user.id);
+		// Filtra os métodos de pagamento com base em Ads.payment_methods
+		if (Ads && Ads.payment_methods) {
+			//console.log(Ads.payment_methods)
+			const filteredMethods = basePaymentMethods.filter(baseMethod =>
+        Ads.payment_methods.some((adMethod:any) => adMethod.key === baseMethod.key)
+      );
+			setPayMethod(filteredMethods); 
+		}
+
+	}, []); // Executa quando Ads for alterado
 
 	const onScroll = (event: any) => {
 		const contentOffsetX = event.nativeEvent.contentOffset.x;
@@ -38,9 +76,10 @@ export function AdsDetailsScreen() {
 		setScrollIndex(index);
 	};
 
+
 	return (
 		<GS.VStack flex={1}>
-			<HeaderApp type="AdsShow" paddingHorizontal='$7'/>
+			<HeaderApp type="AdsShow" paddingHorizontal="$7" user_id={Ads.user_id} />
 			<ScrollView showsVerticalScrollIndicator={false}>
 				<FlatList
 					data={data}
@@ -62,7 +101,7 @@ export function AdsDetailsScreen() {
 					decelerationRate="fast"
 					snapToAlignment="start"
 				/>
-				<GS.VStack marginHorizontal='$7'>
+				<GS.VStack marginHorizontal="$7">
 					<GS.HStack alignItems="center" mt="$4">
 						<UserPhoto source={UserPhotoDefault} width={28} height={28} alt="Logo" />
 						<GS.Heading ml="$2" fontSize="$sm">
@@ -83,14 +122,10 @@ export function AdsDetailsScreen() {
 						</GS.Text>
 					</GS.Box>
 					<GS.HStack justifyContent="space-between">
-						<GS.Heading>Bicicleta</GS.Heading>
-						<GS.Heading color="$blue500">R$ 120,00</GS.Heading>
+						<GS.Heading>{Ads.name}</GS.Heading>
+						<GS.Heading color="$blue500">R$ {Ads.price}</GS.Heading>
 					</GS.HStack>
-					<GS.Text fontSize="$sm">
-						Cras congue cursus in tortor sagittis placerat nunc, tellus arcu. Vitae
-						ante leo eget maecenas urna mattis cursus. Mauris metus amet nibh mauris
-						mauris accumsan, euismod. Aenean leo nunc, purus iaculis in aliquam.
-					</GS.Text>
+					<GS.Text fontSize="$sm">{Ads.description}</GS.Text>
 					<GS.HStack marginVertical="$3">
 						<GS.Text fontSize="$sm" fontFamily="$heading">
 							Aceita troca?
@@ -101,40 +136,23 @@ export function AdsDetailsScreen() {
 					</GS.HStack>
 					<GS.Heading fontSize="$sm">Meios de pagamento:</GS.Heading>
 
-					<GS.HStack>
-						<GS.Icon as={ScanBarcode} mr="$2" />
-						<GS.Text fontSize="$sm">Boleto</GS.Text>
-					</GS.HStack>
-
-					<GS.HStack mt="$2">
-						<GS.Icon as={QrCode} mr="$2" />
-						<GS.Text fontSize="$sm">Pix</GS.Text>
-					</GS.HStack>
-
-					<GS.HStack>
-						<GS.Icon as={Banknote} mr="$2" />
-						<GS.Text fontSize="$sm">Dinheiro</GS.Text>
-					</GS.HStack>
-
-					<GS.HStack mt="$2">
-						<GS.Icon as={Landmark} mr="$2" />
-						<GS.Text fontSize="$sm">Cartão de Crédito</GS.Text>
-					</GS.HStack>
-
-					<GS.HStack mt="$2" mb="$5">
-						<GS.Icon as={CreditCard} mr="$2" />
-						<GS.Text fontSize="$sm">Deposito Bancário</GS.Text>
-					</GS.HStack>
+					{payMethod.map((item:IpayMethod) => (
+						<GS.HStack mt='$2' key={item.key}>
+							<GS.Icon as={item.icon} mr="$2" />
+							<GS.Text fontSize="$sm">{item.name}</GS.Text>
+						</GS.HStack>
+					))}
 				</GS.VStack>
 
 				<GS.HStack
+					mt='$4'
 					paddingVertical="$5"
-					paddingHorizontal='$7'
+					paddingHorizontal="$7"
 					justifyContent="space-between"
 					alignItems="center"
-					bg='$white'
+					bg="$white"
 				>
-					<GS.Heading color="$blue500">R$ 120,00</GS.Heading>
+					<GS.Heading color="$blue500">R$ {Ads.price.toFixed(2).replace('.', ',')}</GS.Heading>
 					<Button
 						title="Entrar em contato"
 						type="secondary"

@@ -16,20 +16,25 @@ import { api } from '@services/api';
 
 type Props = ComponentProps<typeof GS.HStack> & {
 	type?: 'Home' | 'AdsCreate' | 'AdsEdit' | 'AdsShow';
+	user_id?: string;
 };
 
-export function HeaderApp({ type = 'Home', ...rest }: Props) {
+export function HeaderApp({ user_id = '', type = 'Home', ...rest }: Props) {
 	const { navigate, goBack } = useNavigation();
 	const { user } = useAuth();
-	
+
 	return (
 		<GS.HStack gap="$3" pt="$16" pb="$5" alignItems="center" {...rest}>
 			{type === 'Home' && (
 				<>
 					<UserPhoto
-						source={user.avatar ? { uri:`${api.defaults.baseURL}/images/${user.avatar}` } : defaultUserPhotoImg}
+						source={
+							user.avatar
+								? { uri: `${api.defaults.baseURL}/images/${user.avatar}` }
+								: defaultUserPhotoImg
+						}
 						alt="imagem do usuario"
-						resizeMode='cover'
+						resizeMode="cover"
 						w="$12"
 						h="$12"
 					/>
@@ -38,14 +43,14 @@ export function HeaderApp({ type = 'Home', ...rest }: Props) {
 							Boas Vindas,
 						</GS.Text>
 						<GS.Heading color="$gray100" fontSize="$md">
-							{user.name.substring(0,14)}
+							{user.name.substring(0, 14)}
 						</GS.Heading>
 					</GS.VStack>
 					<GS.Box w="$35">
 						<Button
 							title="Criar Anuncio"
 							icon={Plus}
-							onPress={() => navigate('adsCreateEdit',{})}
+							onPress={() => navigate('adsCreateEdit', {})}
 						/>
 					</GS.Box>
 				</>
@@ -65,11 +70,11 @@ export function HeaderApp({ type = 'Home', ...rest }: Props) {
 					<TouchableOpacity onPress={goBack}>
 						<GS.Icon as={ArrowLeft} size="xl" />
 					</TouchableOpacity>
-					<TouchableOpacity
-						onPress={() => navigate('adsCreateEdit', { AdsId: '1' })}
-					>
-						<GS.Icon as={PencilLine} size="xl" />
-					</TouchableOpacity>
+					{user.id === user_id && (
+						<TouchableOpacity>
+							<GS.Icon as={PencilLine} size="xl" />
+						</TouchableOpacity>
+					)}
 				</GS.HStack>
 			)}
 		</GS.HStack>
