@@ -47,13 +47,20 @@ export function AdsPreviewScreen() {
 	const { user } = useAuth();
 	const [scrollIndex, setScrollIndex] = useState(0); // Índice da imagem visível
 	const { loadProductsList } = useProducts();
-	const { navigate, goBack } = useNavigation();
+	const { navigate, goBack, reset} = useNavigation();
 	const toast = GS.useToast();
 
 	async function handlePublishProduct() {
 		try {
 			if (idEdit !== undefined) {
 				await api.put(`/products/${idEdit}`, productPreview);
+				await loadProductsList();
+				reset({
+					index: 0,  // A primeira tela da nova stack (índice 0)
+					routes: [
+						{ name: 'adsUser' },  // Aqui você define a tela para onde quer ir após resetar
+					],
+				});
 				toast.show({
 					placement: 'top',
 					render: ({ id }) => (
@@ -65,8 +72,6 @@ export function AdsPreviewScreen() {
 						/>
 					),
 				});
-				await loadProductsList();
-				navigate('adsUser');
 			} else {
 				await api.post('/products', productPreview);
 				toast.show({
@@ -81,7 +86,12 @@ export function AdsPreviewScreen() {
 					),
 				});
 				await loadProductsList();
-				navigate('adsUser');
+				reset({
+					index: 0,  // A primeira tela da nova stack (índice 0)
+					routes: [
+						{ name: 'adsUser' },  // Aqui você define a tela para onde quer ir após resetar
+					],
+				});
 			}
 		} catch (error) {
 			toast.show({

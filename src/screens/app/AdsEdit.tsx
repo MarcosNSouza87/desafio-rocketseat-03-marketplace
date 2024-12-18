@@ -123,6 +123,11 @@ export function AdsEditScreen() {
 		}
 	}
 
+	function stringToBoolean(str:string) {
+		if (str.toLowerCase() === "false") return false;
+		return str.toLowerCase() === "true";
+	}
+
 	useEffect(() => {
 		console.log(productEdit);
 		if (productEdit) {
@@ -194,7 +199,7 @@ export function AdsEditScreen() {
 					value={isNew}
 					onChange={(value) => {
 						setIsNew(value);
-						setValue('is_new', value.toBoolean());
+						setValue('is_new', stringToBoolean(value));
 					}}
 				>
 					<GS.HStack space="2xl">

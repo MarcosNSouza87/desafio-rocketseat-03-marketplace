@@ -5,6 +5,7 @@ export declare global {
 			signOut: undefined;
 			home: undefined;
 			homeStack: undefined;
+			adsUserStack: undefined;
 			adsUser: undefined;
 			adsCreate: undefined;
 			adsShowDetails: {productDetails: ProductDTO};

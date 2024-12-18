@@ -8,7 +8,7 @@ import { AdsCreateScreen } from '@screens/app/AdsCreate';
 import { AdsEditScreen } from '@screens/app/AdsEdit';
 import { AdsPreviewScreen } from '@screens/app/AdsPreview';
 
-type HomeRoutes = {
+type UserRoutes = {
 	adsUserStack: undefined;
 	adsCreate: undefined;
 	adsShowDetails: { productDetails: ProductDTO };
@@ -16,9 +16,9 @@ type HomeRoutes = {
 	adsPreview: { productPreview: ProductCreateDTO, idEdit?: string };
 };
 
-export type HomeNavigatorRoutesProps = NativeStackNavigationProp<HomeRoutes>;
+export type HomeNavigatorRoutesProps = NativeStackNavigationProp<UserRoutes>;
 
-const { Navigator, Screen } = createNativeStackNavigator<HomeRoutes>();
+const { Navigator, Screen } = createNativeStackNavigator<UserRoutes>();
 
 export function AdsUserRoutes() {
 	return (

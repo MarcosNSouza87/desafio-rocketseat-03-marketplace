@@ -109,6 +109,12 @@ export function AdsCreateScreen() {
 		}
 	}
 
+	function stringToBoolean(str:string) {
+		if (str.toLowerCase() === "false") return false;
+		return str.toLowerCase() === "true";
+	}
+
+
 	return (
 		<GS.VStack flex={1} paddingHorizontal="$7">
 			<GS.HStack gap="$3" pt="$16" pb="$5" alignItems="center">
@@ -164,7 +170,7 @@ export function AdsCreateScreen() {
 					value={values}
 					onChange={(value) => {
 						setValues(value);
-						setValue('is_new', value === 'novo');
+						setValue('is_new', stringToBoolean(value));
 					}}
 				>
 					<GS.HStack space="2xl">

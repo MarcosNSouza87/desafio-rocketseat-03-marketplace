@@ -30,7 +30,6 @@ export function HomeRoutes() {
 			<Screen name="adsShowDetails" component={AdsShowDetailsScreen} />
 			<Screen name="adsCreate" component={AdsCreateScreen} />
 			<Screen name="adsPreview" component={AdsPreviewScreen} />
-
 		</Navigator>
 	);
 }
