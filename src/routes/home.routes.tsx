@@ -5,13 +5,14 @@ import {
 import { HomeScreen } from '@screens/app/Home';
 import { AdsShowDetailsScreen } from '@screens/app/AdsShowDetails';
 import { AdsCreateScreen } from '@screens/app/AdsCreate';
-import { AdsEditScreen } from '@screens/app/AdsEdit';
+import { AdsPreviewScreen } from '@screens/app/AdsPreview';
 
 type HomeRoutes = {
 	homeStack: undefined;
-	adsShowDetails: { AdsId: string };
-	adsCreate: { ads?: any };
-	adsEdit: { ads?: any };
+	adsCreate: undefined;
+	adsShowDetails: { productDetails: ProductDTO };
+	adsEdit: { productEdit: ProductDTO };
+	adsPreview: { productPreview: ProductCreateDTO, idEdit?: string};
 };
 
 export type HomeNavigatorRoutesProps = NativeStackNavigationProp<HomeRoutes>;
@@ -28,6 +29,8 @@ export function HomeRoutes() {
 			<Screen name="homeStack" component={HomeScreen} />
 			<Screen name="adsShowDetails" component={AdsShowDetailsScreen} />
 			<Screen name="adsCreate" component={AdsCreateScreen} />
+			<Screen name="adsPreview" component={AdsPreviewScreen} />
+
 		</Navigator>
 	);
 }

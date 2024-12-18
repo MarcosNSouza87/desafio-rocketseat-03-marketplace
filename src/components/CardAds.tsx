@@ -55,7 +55,7 @@ export function CardAds({ info, ...rest }: Props) {
 							borderRadius='$md'
 							style={{backgroundColor: '#00000088'}}
 						>
-							<GS.Text color="$white">Anuncio Desativado</GS.Text>
+							<GS.Text color="$white" fontFamily='$heading' fontSize='$sm' >Anuncio Desativado</GS.Text>
 						</GS.Box>
 					)}
 					<GS.Text fontSize="$sm">{info.name}</GS.Text>

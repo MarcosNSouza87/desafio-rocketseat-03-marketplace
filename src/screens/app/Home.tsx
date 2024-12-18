@@ -31,27 +31,26 @@ export function HomeScreen() {
 	const { productsGeneral, loadProductsList } = useProducts();
 
 	async function handleSearch() {
-		console.log('search');
+		// console.log('search');
 	}
 	async function handleFilter() {
-		console.log('filter');
+		// console.log('filter');
 		setShowActionsheet(!showActionsheet);
 	}
 	async function handleMoreFilter() {
-		console.log('filter');
+		// console.log('filter');
 		setShowActionsheet(!showActionsheet);
 	}
 
 	async function handleGoDetails(info: any) {
-		console.log('details');
+		// console.log('details');
 		navigate('adsShowDetails', { productDetails: info });
 	}
 
 	async function loadHomeInitial() {
 		try {
 			const { data } = await api.get('/products/');
-			console.log(data);
-			setData(data);
+
 		} catch (error) {
 			toast.show({
 				placement: 'top',

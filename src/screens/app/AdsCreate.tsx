@@ -63,22 +63,28 @@ export function AdsCreateScreen() {
 	// Função para submeter o formulário
 	async function onSubmit(formData: FormDataProps) {
 		try {
-			setIsLoaded(true);
-			const { data } = await api.post('/products', formData);
+			const productPreview:ProductCreateDTO = {
+				...formData,
+				is_active: true,
+				product_images: [],
+			}
 
-			console.log('resp to insert new product => ', data);
-			toast.show({
-				placement: 'top',
-				render: ({ id }) => (
-					<ToastMessage
-						id={id}
-						action="success"
-						title="produto cadastrado com sucesso!"
-						onClose={() => toast.close(id)}
-					/>
-				),
-			});
-			navigate('adsUser');
+			navigate('adsPreview', {productPreview });
+			//const { data } = await api.post('/products', formData);
+
+			//console.log('resp to insert new product => ', data);
+			// toast.show({
+			// 	placement: 'top',
+			// 	render: ({ id }) => (
+			// 		<ToastMessage
+			// 			id={id}
+			// 			action="success"
+			// 			title="produto cadastrado com sucesso!"
+			// 			onClose={() => toast.close(id)}
+			// 		/>
+			// 	),
+			// });
+			
 
 			// const resp = await api.post('/products/images', bodySignUpForm, {
 			// 	headers: {

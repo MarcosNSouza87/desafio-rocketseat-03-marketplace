@@ -6,16 +6,7 @@ import P1 from '@assets/Prd1.png';
 import P2 from '@assets/Prd2.png';
 import P3 from '@assets/Prd3.png';
 import { UserPhoto } from '@components/UserPhoto';
-import {
-	ScanBarcode,
-	QrCode,
-	Banknote,
-	Landmark,
-	CreditCard,
-	MessageCircleReply,
-	ArrowLeft,
-	PencilLine,
-} from 'lucide-react-native';
+import * as LRN from 'lucide-react-native';
 import { Button } from '@components/Button';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useAuth } from '@hooks/useAuth';
@@ -38,11 +29,11 @@ export function AdsShowDetailsScreen() {
 	const { width } = Dimensions.get('window');
 
 	const basePaymentMethods: IpayMethod[] = [
-		{ key: 'boleto', name: 'Boleto', icon: ScanBarcode },
-		{ key: 'pix', name: 'Pix', icon: QrCode },
-		{ key: 'cash', name: 'Dinheiro', icon: Banknote },
-		{ key: 'card', name: 'Cartão de Crédito', icon: Landmark },
-		{ key: 'deposit', name: 'Depósito Bancário', icon: CreditCard },
+		{ key: 'boleto', name: 'Boleto', icon: LRN.ScanBarcode },
+		{ key: 'pix', name: 'Pix', icon: LRN.QrCode },
+		{ key: 'cash', name: 'Dinheiro', icon: LRN.Banknote },
+		{ key: 'card', name: 'Cartão de Crédito', icon: LRN.Landmark },
+		{ key: 'deposit', name: 'Depósito Bancário', icon: LRN.CreditCard },
 	];
 
 	const [payMethod, setPayMethod] = useState<IpayMethod[]>([]);
@@ -53,6 +44,7 @@ export function AdsShowDetailsScreen() {
 	const [scrollIndex, setScrollIndex] = useState(0); // Índice da imagem visível
 
 	useEffect(() => {
+		console.log('product show  ->> ',productDetails)
 		// carrega os payments na tela
 		if (productDetails && productDetails.payment_methods) {
 			//console.log(Ads.payment_methods)
@@ -85,13 +77,13 @@ export function AdsShowDetailsScreen() {
 			<GS.HStack gap="$3" pt="$16" pb="$5" paddingHorizontal="$7" alignItems="center">
 				<GS.HStack w="$full" justifyContent="space-between">
 					<TouchableOpacity onPress={goBack}>
-						<GS.Icon as={ArrowLeft} size="xl" />
+						<GS.Icon as={LRN.ArrowLeft} size="xl" />
 					</TouchableOpacity>
 					{user.id === productDetails.user_id && (
 						<TouchableOpacity
 							onPress={() => navigate('adsEdit', { productEdit: productDetails })}
 						>
-							<GS.Icon as={PencilLine} size="xl" />
+							<GS.Icon as={LRN.PencilLine} size="xl" />
 						</TouchableOpacity>
 					)}
 				</GS.HStack>
@@ -185,7 +177,7 @@ export function AdsShowDetailsScreen() {
 					<Button
 						title="Entrar em contato"
 						type="secondary"
-						icon={MessageCircleReply}
+						icon={LRN.MessageCircleReply}
 						style={{ width: '55%' }}
 					/>
 				</GS.HStack>

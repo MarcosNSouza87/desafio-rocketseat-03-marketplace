@@ -10,10 +10,10 @@ import { AdsPreviewScreen } from '@screens/app/AdsPreview';
 
 type HomeRoutes = {
 	adsUserStack: undefined;
-	adsShowDetails: { Ads: ProductDTO };
-	adsCreate: {};
-	adsEdit: { Ads?: ProductDTO };
-	adsPreview: { Ads?: ProductDTO };
+	adsCreate: undefined;
+	adsShowDetails: { productDetails: ProductDTO };
+	adsEdit: { productEdit: ProductDTO };
+	adsPreview: { productPreview: ProductCreateDTO, idEdit?: string };
 };
 
 export type HomeNavigatorRoutesProps = NativeStackNavigationProp<HomeRoutes>;

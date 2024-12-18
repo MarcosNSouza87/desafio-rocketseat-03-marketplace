@@ -22,6 +22,8 @@ export function ProductsContextProvider({ children }: ProductsContextProviderPro
 	const [productsUser, setProductsUser] = useState<ProductDTO[]>([]);
 	async function loadProductsList() {
 		try {
+			setProductsGeneral([]);
+			setProductsUser([]);
 			const respAll = await api.get('/products/');
 			console.log(respAll.data.length)
 			if (respAll.data.length > 0) {

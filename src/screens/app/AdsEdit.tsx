@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import * as GS from '@gluestack-ui/themed';
-import { HeaderApp } from '@components/HomeHeader';
 import { Input } from '@components/Input';
 import { InputTextArea } from '@components/TextAreaInput';
 import { CircleIcon, CheckIcon, Check, ArrowLeft } from 'lucide-react-native';
@@ -20,7 +19,7 @@ import { ToastMessage } from '@components/ToastMessage';
 import { useProducts } from '@hooks/useProducts';
 
 type RouteParamsProps = {
-	productId: string;
+	productEdit: ProductDTO;
 };
 
 type FormDataProps = {
@@ -30,6 +29,11 @@ type FormDataProps = {
 	price: number;
 	accept_trade: boolean;
 	payment_methods: string[];
+};
+
+type IpayMethod = {
+  key: string;
+  name: string;
 };
 
 const createEditAdsSchema = yup.object({
@@ -51,21 +55,18 @@ const createEditAdsSchema = yup.object({
 
 export function AdsEditScreen() {
 	const [isLoaded, setIsLoaded] = useState(false);
-	const [values, setValues] = useState('novo');
+	const [isNew, setIsNew] = useState('novo');
 	const [listImages, setListImages] = useState<ImagesCreateAdsProps[]>([]);
+
 	const { navigate, goBack } = useNavigation();
 	const route = useRoute();
-
-	const [productEdit, setProductEdit] = useState<ProductDTO>();
-
-	const { productsUser } = useProducts();
-
 	const toast = GS.useToast();
 
-	const { productId } = route.params as RouteParamsProps;
+	const { productEdit } = route.params as RouteParamsProps;
 	const {
 		control,
 		setValue,
+		getValues,
 		handleSubmit,
 		formState: { errors },
 	} = useForm<FormDataProps>({
@@ -76,27 +77,28 @@ export function AdsEditScreen() {
 	// Função para submeter o formulário
 	async function onSubmit(formData: FormDataProps) {
 		try {
-			setIsLoaded(true);
-			if (productId) {
-				console.log('edit => ', formData);
-				//const { data } = await api.put('/products', formData);
-				return;
+			const productPreview:ProductCreateDTO = {
+				...formData,
+				is_active: true,
+				product_images: [],
 			}
-			const { data } = await api.post('/products', formData);
 
-			console.log('resp to insert new product => ', data);
-			toast.show({
-				placement: 'top',
-				render: ({ id }) => (
-					<ToastMessage
-						id={id}
-						action="success"
-						title="produto cadastrado com sucesso!"
-						onClose={() => toast.close(id)}
-					/>
-				),
-			});
-			navigate('adsUser');
+			navigate('adsPreview', {productPreview , idEdit:productEdit.id});
+
+			// const { data } = await api.put('/products', formData);
+
+			// toast.show({
+			// 	placement: 'top',
+			// 	render: ({ id }) => (
+			// 		<ToastMessage
+			// 			id={id}
+			// 			action="success"
+			// 			title="produto cadastrado com sucesso!"
+			// 			onClose={() => toast.close(id)}
+			// 		/>
+			// 	),
+			// });
+			// navigate('adsUser');
 
 			// const resp = await api.post('/products/images', bodySignUpForm, {
 			// 	headers: {
@@ -122,24 +124,19 @@ export function AdsEditScreen() {
 	}
 
 	useEffect(() => {
-		if (productId) {
-			const select = productsUser.find((item) => item.id === productId);
-			setProductEdit(select);
-		}
-		console.log('here');
-	}, []);
-
-	useEffect(() => {
+		console.log(productEdit);
 		if (productEdit) {
+
 			setValue('name', productEdit.name);
 			setValue('description', productEdit.description);
 			setValue('is_new', productEdit.is_new);
 			setValue('price', productEdit.price);
 			setValue('accept_trade', productEdit.accept_trade);
-			setValue('payment_methods', productEdit.payment_methods);
+			const convertPayments = productEdit.payment_methods.map((payment:any) => payment.key);
+			setValue('payment_methods',convertPayments);
 		}
-		console.log('product edit ==> ', productEdit?.accept_trade);
-	}, [productEdit, setValue]);
+		setIsNew(productEdit.is_new ? 'true' : 'false');
+	}, []);
 
 	return (
 		<GS.VStack flex={1} paddingHorizontal="$7">
@@ -194,24 +191,22 @@ export function AdsEditScreen() {
 				/>
 
 				<GS.RadioGroup
-					value={values}
+					value={isNew}
 					onChange={(value) => {
-						setValues(value);
-						setValue('is_new', value === 'novo');
+						setIsNew(value);
+						setValue('is_new', value.toBoolean());
 					}}
 				>
 					<GS.HStack space="2xl">
-						<GS.Radio value="novo">
+						<GS.Radio value="true">
 							<GS.RadioIndicator>
-								<GS.RadioIcon as={values === 'novo' ? CircleSelected : CircleIcon} />
+								<GS.RadioIcon as={isNew === 'true' ? CircleSelected : CircleIcon} />
 							</GS.RadioIndicator>
 							<GS.RadioLabel ml="$2">Produto novo</GS.RadioLabel>
 						</GS.Radio>
-						<GS.Radio value="usado">
+						<GS.Radio value="false">
 							<GS.RadioIndicator>
-								<GS.RadioIcon
-									as={values === 'usado' ? CircleSelected : CircleIcon}
-								/>
+								<GS.RadioIcon as={isNew === 'false' ? CircleSelected : CircleIcon} />
 							</GS.RadioIndicator>
 							<GS.RadioLabel ml="$2">Produto usado</GS.RadioLabel>
 						</GS.Radio>
@@ -250,7 +245,7 @@ export function AdsEditScreen() {
 								ios_backgroundColor={'$gray500'}
 								size="sm"
 								onValueChange={onChange}
-								value={value}
+								value={getValues('accept_trade')}
 							/>
 							<GS.Text size="sm">{value ? 'Sim' : 'Não'}</GS.Text>
 						</GS.HStack>
