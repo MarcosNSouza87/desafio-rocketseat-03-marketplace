@@ -3,13 +3,15 @@ import {
 	NativeStackNavigationProp,
 } from '@react-navigation/native-stack';
 import { HomeScreen } from '@screens/app/Home';
-import { AdsDetailsScreen } from '@screens/app/AdsDetails';
-import { AdsCreateEditScreen } from '@screens/app/AdsCreateEdit';
+import { AdsShowDetailsScreen } from '@screens/app/AdsShowDetails';
+import { AdsCreateScreen } from '@screens/app/AdsCreate';
+import { AdsEditScreen } from '@screens/app/AdsEdit';
 
 type HomeRoutes = {
 	homeStack: undefined;
-	adsDetails: {AdsId: string};
-	adsCreateEdit: {ads?: any};
+	adsShowDetails: { AdsId: string };
+	adsCreate: { ads?: any };
+	adsEdit: { ads?: any };
 };
 
 export type HomeNavigatorRoutesProps = NativeStackNavigationProp<HomeRoutes>;
@@ -24,8 +26,8 @@ export function HomeRoutes() {
 			}}
 		>
 			<Screen name="homeStack" component={HomeScreen} />
-			<Screen name="adsDetails" component={AdsDetailsScreen} />
-			<Screen name="adsCreateEdit" component={AdsCreateEditScreen} />
+			<Screen name="adsShowDetails" component={AdsShowDetailsScreen} />
+			<Screen name="adsCreate" component={AdsCreateScreen} />
 		</Navigator>
 	);
 }

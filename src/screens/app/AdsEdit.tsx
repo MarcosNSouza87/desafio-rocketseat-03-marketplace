@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import * as GS from '@gluestack-ui/themed';
-import { HeaderApp } from '@components/HeaderApp';
+import { HeaderApp } from '@components/HomeHeader';
 import { Input } from '@components/Input';
 import { InputTextArea } from '@components/TextAreaInput';
-import { CircleIcon, CheckIcon, Check } from 'lucide-react-native';
+import { CircleIcon, CheckIcon, Check, ArrowLeft } from 'lucide-react-native';
 import CircleSelected from '@assets/circleSelectIcon.svg';
-import { ScrollView } from 'react-native';
+import { ScrollView, TouchableOpacity } from 'react-native';
 import { Button } from '@components/Button';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import {
@@ -49,7 +49,7 @@ const createEditAdsSchema = yup.object({
 		.required('Informe os métodos de pagamento'),
 });
 
-export function AdsCreateEditScreen() {
+export function AdsEditScreen() {
 	const [isLoaded, setIsLoaded] = useState(false);
 	const [values, setValues] = useState('novo');
 	const [listImages, setListImages] = useState<ImagesCreateAdsProps[]>([]);
@@ -77,8 +77,8 @@ export function AdsCreateEditScreen() {
 	async function onSubmit(formData: FormDataProps) {
 		try {
 			setIsLoaded(true);
-			if(productId){
-				console.log('edit => ', formData)
+			if (productId) {
+				console.log('edit => ', formData);
 				//const { data } = await api.put('/products', formData);
 				return;
 			}
@@ -126,22 +126,32 @@ export function AdsCreateEditScreen() {
 			const select = productsUser.find((item) => item.id === productId);
 			setProductEdit(select);
 		}
+		console.log('here');
 	}, []);
 
 	useEffect(() => {
-    if (productEdit) {
-      setValue('name', productEdit.name);
-      setValue('description', productEdit.description);
-      setValue('is_new', productEdit.is_new);
-      setValue('price', productEdit.price);
-      setValue('accept_trade', productEdit.accept_trade);
-      setValue('payment_methods', productEdit.payment_methods);
-    }
-  }, [productEdit, setValue]);
+		if (productEdit) {
+			setValue('name', productEdit.name);
+			setValue('description', productEdit.description);
+			setValue('is_new', productEdit.is_new);
+			setValue('price', productEdit.price);
+			setValue('accept_trade', productEdit.accept_trade);
+			setValue('payment_methods', productEdit.payment_methods);
+		}
+		console.log('product edit ==> ', productEdit?.accept_trade);
+	}, [productEdit, setValue]);
 
 	return (
 		<GS.VStack flex={1} paddingHorizontal="$7">
-			<HeaderApp type="AdsCreate" />
+			<GS.HStack gap="$3" pt="$16" pb="$5" alignItems="center">
+				<TouchableOpacity onPress={goBack}>
+					<GS.Icon as={ArrowLeft} size="xl" />
+				</TouchableOpacity>
+				<GS.Heading color="$gray100" fontSize="$2xl" flex={1} textAlign="center">
+					Editar anúncio
+				</GS.Heading>
+			</GS.HStack>
+
 			<ScrollView showsVerticalScrollIndicator={false}>
 				<GS.Heading mt="$2" mb="$3" fontSize="$md">
 					Imagens

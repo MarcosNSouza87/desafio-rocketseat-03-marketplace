@@ -2,16 +2,12 @@ import React, { useCallback, useState } from 'react';
 
 import * as GS from '@gluestack-ui/themed';
 import { Plus } from 'lucide-react-native';
-import { FlatList, ScrollView } from 'react-native';
+import { FlatList } from 'react-native';
 import { CardAds } from '@components/CardAds';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { api } from '@services/api';
 import { Loading } from '@components/Loading';
 import { useProducts } from '@hooks/useProducts';
 
-type RouteParamsProps = {
-	Ads: any;
-};
 
 export function AdsUserScreen() {
 	const [isLoading, setIsLoading] = useState(false);
@@ -20,12 +16,10 @@ export function AdsUserScreen() {
 
 	const {productsUser} = useProducts();
 
-	async function handleGoDetails(info: any) {
+	async function handleGoDetails(info: ProductDTO) {
 		console.log('details');
-		navigate('adsDetails', { Ads: info });
+		navigate('adsShowDetails', { productDetails: info });
 	}
-
-	
 
 	async function fetchProducts() {
 		try {
@@ -49,7 +43,7 @@ export function AdsUserScreen() {
 				<GS.Heading flex={1} textAlign="center">
 					Meus anúncios
 				</GS.Heading>
-				<GS.Pressable onPress={() => navigate('adsCreateEdit', {})}>
+				<GS.Pressable onPress={() => navigate('adsCreate')}>
 					<GS.Icon as={Plus} size="xl" />
 				</GS.Pressable>
 			</GS.HStack>

@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
 import * as GS from '@gluestack-ui/themed';
-import { HeaderApp } from '@components/HeaderApp';
-import { FlatList, ScrollView, Dimensions } from 'react-native';
+import { FlatList, ScrollView, Dimensions, TouchableOpacity } from 'react-native';
 import P1 from '@assets/Prd1.png';
 import P2 from '@assets/Prd2.png';
 import P3 from '@assets/Prd3.png';
 import { UserPhoto } from '@components/UserPhoto';
-import UserPhotoDefault from '@assets/userPhotoDefault.png';
-
 import {
 	ScanBarcode,
 	QrCode,
@@ -16,14 +13,16 @@ import {
 	Landmark,
 	CreditCard,
 	MessageCircleReply,
+	ArrowLeft,
+	PencilLine,
 } from 'lucide-react-native';
 import { Button } from '@components/Button';
-import { useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { useAuth } from '@hooks/useAuth';
 import { api } from '@services/api';
 
 type RouteParamsProps = {
-	Ads: ProductDTO;
+	productDetails: ProductDTO;
 };
 
 type IpayMethod = {
@@ -32,9 +31,10 @@ type IpayMethod = {
 	icon: any;
 };
 
-export function AdsDetailsScreen() {
+export function AdsShowDetailsScreen() {
 	const [data, setData] = useState([P1, P2, P3]);
 
+	const { navigate, goBack } = useNavigation();
 	const { width } = Dimensions.get('window');
 
 	const basePaymentMethods: IpayMethod[] = [
@@ -48,16 +48,18 @@ export function AdsDetailsScreen() {
 	const [payMethod, setPayMethod] = useState<IpayMethod[]>([]);
 
 	const route = useRoute();
-	const { Ads } = route.params as RouteParamsProps;
+	const { productDetails } = route.params as RouteParamsProps;
 	const { user } = useAuth();
 	const [scrollIndex, setScrollIndex] = useState(0); // Índice da imagem visível
 
 	useEffect(() => {
-		// Filtra os métodos de pagamento com base em Ads.payment_methods
-		if (Ads && Ads.payment_methods) {
+		// carrega os payments na tela
+		if (productDetails && productDetails.payment_methods) {
 			//console.log(Ads.payment_methods)
 			const filteredMethods = basePaymentMethods.filter((baseMethod) =>
-				Ads.payment_methods.some((adMethod: any) => adMethod.key === baseMethod.key),
+				productDetails.payment_methods.some(
+					(adMethod: any) => adMethod.key === baseMethod.key,
+				),
 			);
 			setPayMethod(filteredMethods);
 		}
@@ -75,11 +77,26 @@ export function AdsDetailsScreen() {
 		setScrollIndex(index);
 	};
 
-	const userUri = Ads.user !== undefined ? Ads.user.avatar : user.avatar;
+	const userUri =
+		productDetails.user !== undefined ? productDetails.user.avatar : user.avatar;
 
 	return (
 		<GS.VStack flex={1}>
-			<HeaderApp type="AdsShow" paddingHorizontal="$7"  productId={Ads.id} user_id={Ads.user_id} />
+			<GS.HStack gap="$3" pt="$16" pb="$5" paddingHorizontal="$7" alignItems="center">
+				<GS.HStack w="$full" justifyContent="space-between">
+					<TouchableOpacity onPress={goBack}>
+						<GS.Icon as={ArrowLeft} size="xl" />
+					</TouchableOpacity>
+					{user.id === productDetails.user_id && (
+						<TouchableOpacity
+							onPress={() => navigate('adsEdit', { productEdit: productDetails })}
+						>
+							<GS.Icon as={PencilLine} size="xl" />
+						</TouchableOpacity>
+					)}
+				</GS.HStack>
+			</GS.HStack>
+
 			<ScrollView showsVerticalScrollIndicator={false}>
 				<FlatList
 					data={data}
@@ -110,7 +127,9 @@ export function AdsDetailsScreen() {
 							alt="Logo"
 						/>
 						<GS.Heading ml="$2" fontSize="$sm">
-							{user.id === Ads.user_id ? user.name : Ads.user?.name}
+							{user.id === productDetails.user_id
+								? user.name
+								: productDetails.user?.name}
 						</GS.Heading>
 					</GS.HStack>
 
@@ -124,22 +143,22 @@ export function AdsDetailsScreen() {
 							rounded="$full"
 							textTransform="uppercase"
 						>
-							{Ads.is_new ? 'Novo' : 'Usado'}
+							{productDetails.is_new ? 'Novo' : 'Usado'}
 						</GS.Text>
 					</GS.Box>
 					<GS.HStack justifyContent="space-between">
-						<GS.Heading>{Ads.name}</GS.Heading>
+						<GS.Heading>{productDetails.name}</GS.Heading>
 						<GS.Heading color="$blue500">
-							R$ {Ads.price.toFixed(2).replace('.', ',')}
+							R$ {productDetails.price.toFixed(2).replace('.', ',')}
 						</GS.Heading>
 					</GS.HStack>
-					<GS.Text fontSize="$sm">{Ads.description}</GS.Text>
+					<GS.Text fontSize="$sm">{productDetails.description}</GS.Text>
 					<GS.HStack marginVertical="$3">
 						<GS.Text fontSize="$sm" fontFamily="$heading">
 							Aceita troca?
 						</GS.Text>
 						<GS.Text ml="$3" fontSize="$sm" fontFamily="$body">
-							{Ads.accept_trade ? 'Sim' : 'Não'}
+							{productDetails.accept_trade ? 'Sim' : 'Não'}
 						</GS.Text>
 					</GS.HStack>
 					<GS.Heading fontSize="$sm">Meios de pagamento:</GS.Heading>
@@ -161,7 +180,7 @@ export function AdsDetailsScreen() {
 					bg="$white"
 				>
 					<GS.Heading color="$blue500">
-						R$ {Ads.price.toFixed(2).replace('.', ',')}
+						R$ {productDetails.price.toFixed(2).replace('.', ',')}
 					</GS.Heading>
 					<Button
 						title="Entrar em contato"

@@ -3,13 +3,17 @@ import {
 	NativeStackNavigationProp,
 } from '@react-navigation/native-stack';
 import { AdsUserScreen } from '@screens/app/AdsUser';
-import { AdsDetailsScreen } from '@screens/app/AdsDetails';
-import { AdsCreateEditScreen } from '@screens/app/AdsCreateEdit';
+import { AdsShowDetailsScreen } from '@screens/app/AdsShowDetails';
+import { AdsCreateScreen } from '@screens/app/AdsCreate';
+import { AdsEditScreen } from '@screens/app/AdsEdit';
+import { AdsPreviewScreen } from '@screens/app/AdsPreview';
 
 type HomeRoutes = {
 	adsUserStack: undefined;
-	adsDetails: {Ads: any};
-	adsCreateEdit: {Ads?: any};
+	adsShowDetails: { Ads: ProductDTO };
+	adsCreate: {};
+	adsEdit: { Ads?: ProductDTO };
+	adsPreview: { Ads?: ProductDTO };
 };
 
 export type HomeNavigatorRoutesProps = NativeStackNavigationProp<HomeRoutes>;
@@ -24,8 +28,10 @@ export function AdsUserRoutes() {
 			}}
 		>
 			<Screen name="adsUserStack" component={AdsUserScreen} />
-			<Screen name="adsDetails" component={AdsDetailsScreen} />
-			<Screen name="adsCreateEdit" component={AdsCreateEditScreen} />
+			<Screen name="adsShowDetails" component={AdsShowDetailsScreen} />
+			<Screen name="adsCreate" component={AdsCreateScreen} />
+			<Screen name="adsEdit" component={AdsEditScreen} />
+			<Screen name="adsPreview" component={AdsPreviewScreen} />
 		</Navigator>
 	);
 }

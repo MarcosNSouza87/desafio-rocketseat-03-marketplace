@@ -4,13 +4,15 @@ import { IForm } from './form';
 export declare global {
 	namespace ReactNavigation {
 		interface RootParamList {
-			home: undefined;
-			homeStack: undefined;
 			signIn: undefined;
 			signOut: undefined;
-			adsDetails: {Ads: ProductDTO};
+			home: undefined;
+			homeStack: undefined;
 			adsUser: undefined;
-			adsCreateEdit: {productId?: string};
+			adsCreate: undefined;
+			adsShowDetails: {productDetails: ProductDTO};
+			adsEdit: {productEdit: ProductDTO};
+			adsPreview: {productPreview: ProductDTO};
 		}
 	}
 }
