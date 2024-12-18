@@ -66,7 +66,7 @@ export function AdsUserScreen() {
 					data={data}
 					keyExtractor={(item) => item.id}
 					renderItem={({ item }) => (
-						<CardAds info={item} isOwnUser={false} onPress={() => handleGoDetails(item)} />
+						<CardAds info={item} onPress={() => handleGoDetails(item)} />
 					)}
 					numColumns={2}
 					horizontal={false}

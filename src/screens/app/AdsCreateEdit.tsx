@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as GS from '@gluestack-ui/themed';
 import { HeaderApp } from '@components/HeaderApp';
 import { Input } from '@components/Input';
@@ -17,9 +17,10 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { api } from '@services/api';
 import { ToastMessage } from '@components/ToastMessage';
+import { useProducts } from '@hooks/useProducts';
 
 type RouteParamsProps = {
-	ads: any;
+	productId: string;
 };
 
 type FormDataProps = {
@@ -55,15 +56,20 @@ export function AdsCreateEditScreen() {
 	const { navigate, goBack } = useNavigation();
 	const route = useRoute();
 
+	const [productEdit, setProductEdit] = useState<ProductDTO>();
+
+	const { productsUser } = useProducts();
+
 	const toast = GS.useToast();
 
-	const { ads } = route.params as RouteParamsProps;
+	const { productId } = route.params as RouteParamsProps;
 	const {
 		control,
 		setValue,
 		handleSubmit,
 		formState: { errors },
 	} = useForm<FormDataProps>({
+		defaultValues: productEdit,
 		resolver: yupResolver(createEditAdsSchema),
 	});
 
@@ -71,13 +77,14 @@ export function AdsCreateEditScreen() {
 	async function onSubmit(formData: FormDataProps) {
 		try {
 			setIsLoaded(true);
-			console.log(formData);
-			console.log(listImages.length);
-			// Aqui você pode enviar os dados para uma API ou fazer outra ação com os dados.
-
+			if(productId){
+				console.log('edit => ', formData)
+				//const { data } = await api.put('/products', formData);
+				return;
+			}
 			const { data } = await api.post('/products', formData);
 
-			console.log('resp to insert new product => ',data);
+			console.log('resp to insert new product => ', data);
 			toast.show({
 				placement: 'top',
 				render: ({ id }) => (
@@ -113,6 +120,24 @@ export function AdsCreateEditScreen() {
 			setIsLoaded(false);
 		}
 	}
+
+	useEffect(() => {
+		if (productId) {
+			const select = productsUser.find((item) => item.id === productId);
+			setProductEdit(select);
+		}
+	}, []);
+
+	useEffect(() => {
+    if (productEdit) {
+      setValue('name', productEdit.name);
+      setValue('description', productEdit.description);
+      setValue('is_new', productEdit.is_new);
+      setValue('price', productEdit.price);
+      setValue('accept_trade', productEdit.accept_trade);
+      setValue('payment_methods', productEdit.payment_methods);
+    }
+  }, [productEdit, setValue]);
 
 	return (
 		<GS.VStack flex={1} paddingHorizontal="$7">

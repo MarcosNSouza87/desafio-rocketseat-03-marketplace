@@ -5,13 +5,17 @@ import { IdentifyStatus } from './IdentifyStatus';
 import { TouchableOpacity } from 'react-native';
 import { ComponentProps } from 'react';
 import { Loading } from './Loading';
+import { useAuth } from '@hooks/useAuth';
+import { api } from '@services/api';
 
 type Props = ComponentProps<typeof TouchableOpacity> & {
-	isOwnUser: boolean;
-	info: any;
+	info: ProductDTO;
 };
 
-export function CardAds({ info, isOwnUser = false, ...rest }: Props) {
+export function CardAds({ info, ...rest }: Props) {
+	const { user } = useAuth();
+
+	
 
 	if (info) {
 		return (
@@ -27,22 +31,36 @@ export function CardAds({ info, isOwnUser = false, ...rest }: Props) {
 					>
 						<GS.HStack w="$full">
 							<GS.Box flex={1}>
-								{!isOwnUser && (
+								{user.id !== info.user_id && (
 									<GS.Image
-										source={defaultUserPhotoImg}
+										source={{ uri: `${api.defaults.baseURL}/images/${info.user?.avatar}` }}
 										width={28}
 										height={28}
 										alt="Logo"
+										style={{borderRadius: '100%'}}
 									/>
 								)}
 							</GS.Box>
 
-							<IdentifyStatus status={info.is_new? 'novo' : 'usado'} />
+							<IdentifyStatus status={info.is_new ? 'novo' : 'usado'} />
 						</GS.HStack>
 					</GS.ImageBackground>
+					{info.is_active === false && (
+						<GS.Box
+							position="absolute"
+							w="$full"
+							h={100}
+							alignItems="center"
+							justifyContent="center"
+							borderRadius='$md'
+							style={{backgroundColor: '#00000088'}}
+						>
+							<GS.Text color="$white">Anuncio Desativado</GS.Text>
+						</GS.Box>
+					)}
 					<GS.Text fontSize="$sm">{info.name}</GS.Text>
 					<GS.Text fontFamily="$heading" fontSize="$sm">
-						R$ {(info.price)}
+						R$ {info.price.toFixed(2).replace('.', ',')}
 					</GS.Text>
 				</GS.VStack>
 			</TouchableOpacity>

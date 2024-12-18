@@ -17,9 +17,10 @@ import { api } from '@services/api';
 type Props = ComponentProps<typeof GS.HStack> & {
 	type?: 'Home' | 'AdsCreate' | 'AdsEdit' | 'AdsShow';
 	user_id?: string;
+	productId?: string;
 };
 
-export function HeaderApp({ user_id = '', type = 'Home', ...rest }: Props) {
+export function HeaderApp({ user_id = '', productId, type = 'Home', ...rest }: Props) {
 	const { navigate, goBack } = useNavigation();
 	const { user } = useAuth();
 
@@ -50,7 +51,7 @@ export function HeaderApp({ user_id = '', type = 'Home', ...rest }: Props) {
 						<Button
 							title="Criar Anuncio"
 							icon={Plus}
-							onPress={() => navigate('adsCreateEdit', {})}
+							onPress={() => navigate('adsCreateEdit',{})}
 						/>
 					</GS.Box>
 				</>
@@ -70,8 +71,8 @@ export function HeaderApp({ user_id = '', type = 'Home', ...rest }: Props) {
 					<TouchableOpacity onPress={goBack}>
 						<GS.Icon as={ArrowLeft} size="xl" />
 					</TouchableOpacity>
-					{user.id === user_id && (
-						<TouchableOpacity>
+					{user.id === user_id && productId && (
+						<TouchableOpacity onPress={() => navigate('adsCreateEdit',{productId: productId})}>
 							<GS.Icon as={PencilLine} size="xl" />
 						</TouchableOpacity>
 					)}

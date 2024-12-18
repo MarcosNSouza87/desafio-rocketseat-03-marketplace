@@ -20,9 +20,10 @@ import {
 import { Button } from '@components/Button';
 import { useRoute } from '@react-navigation/native';
 import { useAuth } from '@hooks/useAuth';
+import { api } from '@services/api';
 
 type RouteParamsProps = {
-	Ads: any;
+	Ads: ProductDTO;
 };
 
 type IpayMethod = {
@@ -52,16 +53,14 @@ export function AdsDetailsScreen() {
 	const [scrollIndex, setScrollIndex] = useState(0); // Índice da imagem visível
 
 	useEffect(() => {
-		console.log(Ads.user_id === user.id);
 		// Filtra os métodos de pagamento com base em Ads.payment_methods
 		if (Ads && Ads.payment_methods) {
 			//console.log(Ads.payment_methods)
-			const filteredMethods = basePaymentMethods.filter(baseMethod =>
-        Ads.payment_methods.some((adMethod:any) => adMethod.key === baseMethod.key)
-      );
-			setPayMethod(filteredMethods); 
+			const filteredMethods = basePaymentMethods.filter((baseMethod) =>
+				Ads.payment_methods.some((adMethod: any) => adMethod.key === baseMethod.key),
+			);
+			setPayMethod(filteredMethods);
 		}
-
 	}, []); // Executa quando Ads for alterado
 
 	const onScroll = (event: any) => {
@@ -76,10 +75,11 @@ export function AdsDetailsScreen() {
 		setScrollIndex(index);
 	};
 
+	const userUri = Ads.user !== undefined ? Ads.user.avatar : user.avatar;
 
 	return (
 		<GS.VStack flex={1}>
-			<HeaderApp type="AdsShow" paddingHorizontal="$7" user_id={Ads.user_id} />
+			<HeaderApp type="AdsShow" paddingHorizontal="$7"  productId={Ads.id} user_id={Ads.user_id} />
 			<ScrollView showsVerticalScrollIndicator={false}>
 				<FlatList
 					data={data}
@@ -103,11 +103,17 @@ export function AdsDetailsScreen() {
 				/>
 				<GS.VStack marginHorizontal="$7">
 					<GS.HStack alignItems="center" mt="$4">
-						<UserPhoto source={UserPhotoDefault} width={28} height={28} alt="Logo" />
+						<UserPhoto
+							source={{ uri: `${api.defaults.baseURL}/images/${userUri}` }}
+							width={28}
+							height={28}
+							alt="Logo"
+						/>
 						<GS.Heading ml="$2" fontSize="$sm">
-							Makenna Baptista
+							{user.id === Ads.user_id ? user.name : Ads.user?.name}
 						</GS.Heading>
 					</GS.HStack>
+
 					<GS.Box w="$12" marginVertical="$4">
 						<GS.Text
 							fontSize="$xs"
@@ -118,12 +124,14 @@ export function AdsDetailsScreen() {
 							rounded="$full"
 							textTransform="uppercase"
 						>
-							Novo
+							{Ads.is_new ? 'Novo' : 'Usado'}
 						</GS.Text>
 					</GS.Box>
 					<GS.HStack justifyContent="space-between">
 						<GS.Heading>{Ads.name}</GS.Heading>
-						<GS.Heading color="$blue500">R$ {Ads.price}</GS.Heading>
+						<GS.Heading color="$blue500">
+							R$ {Ads.price.toFixed(2).replace('.', ',')}
+						</GS.Heading>
 					</GS.HStack>
 					<GS.Text fontSize="$sm">{Ads.description}</GS.Text>
 					<GS.HStack marginVertical="$3">
@@ -131,13 +139,13 @@ export function AdsDetailsScreen() {
 							Aceita troca?
 						</GS.Text>
 						<GS.Text ml="$3" fontSize="$sm" fontFamily="$body">
-							Sim
+							{Ads.accept_trade ? 'Sim' : 'Não'}
 						</GS.Text>
 					</GS.HStack>
 					<GS.Heading fontSize="$sm">Meios de pagamento:</GS.Heading>
 
-					{payMethod.map((item:IpayMethod) => (
-						<GS.HStack mt='$2' key={item.key}>
+					{payMethod.map((item: IpayMethod) => (
+						<GS.HStack mt="$2" key={item.key}>
 							<GS.Icon as={item.icon} mr="$2" />
 							<GS.Text fontSize="$sm">{item.name}</GS.Text>
 						</GS.HStack>
@@ -145,14 +153,16 @@ export function AdsDetailsScreen() {
 				</GS.VStack>
 
 				<GS.HStack
-					mt='$4'
+					mt="$4"
 					paddingVertical="$5"
 					paddingHorizontal="$7"
 					justifyContent="space-between"
 					alignItems="center"
 					bg="$white"
 				>
-					<GS.Heading color="$blue500">R$ {Ads.price.toFixed(2).replace('.', ',')}</GS.Heading>
+					<GS.Heading color="$blue500">
+						R$ {Ads.price.toFixed(2).replace('.', ',')}
+					</GS.Heading>
 					<Button
 						title="Entrar em contato"
 						type="secondary"

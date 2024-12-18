@@ -51,8 +51,10 @@ export function HomeScreen() {
 
 	async function loadHomeInitial() {
 		try {
-			console.log('home products ==> ',productsGeneral)
-			setData(productsGeneral)
+			
+			const {data} = await api.get('/products/');
+			console.log(data)
+			setData(data)
 			
 		} catch (error) {
 			toast.show({
@@ -71,12 +73,9 @@ export function HomeScreen() {
 	}
 
 
-
-	useFocusEffect(
-		useCallback(() => {
-			loadHomeInitial();
-		}, []),
-	);
+	useEffect(() => {
+		loadHomeInitial();
+	},[])
 
 	return (
 		<GS.VStack flex={1} paddingHorizontal="$7">
@@ -112,7 +111,7 @@ export function HomeScreen() {
 				data={data}
 				keyExtractor={(item) => item.id}
 				renderItem={({ item }) => (
-					<CardAds info={item} isOwnUser={false} onPress={() => handleGoDetails(item)} />
+					<CardAds info={item} onPress={() => handleGoDetails(item)} />
 				)}
 				numColumns={2}
 				horizontal={false}

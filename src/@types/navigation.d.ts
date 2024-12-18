@@ -10,7 +10,7 @@ export declare global {
 			signOut: undefined;
 			adsDetails: {Ads: ProductDTO};
 			adsUser: undefined;
-			adsCreateEdit: {Ads?: ProductDTO};
+			adsCreateEdit: {productId?: string};
 		}
 	}
 }

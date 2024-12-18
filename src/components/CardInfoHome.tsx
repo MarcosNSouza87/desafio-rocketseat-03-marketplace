@@ -9,12 +9,9 @@ import { useProducts } from '@hooks/useProducts';
 export default function CardInfoHome() {
 	const { navigate } = useNavigation();
 	const { productsUser } = useProducts();
-	const [qtdActive, setQtdActive] = useState(0);
-	//console.log(productsUser);
-	useEffect(() => {
-		const qtd = productsUser.filter((itm) => itm.is_active);
-		setQtdActive(qtd.length);
-	}, []);
+
+	const qtdActive = productsUser.filter((itm) => itm.is_active).length;
+
 	return (
 		<GS.VStack>
 			<GS.Text>Seus produtos anunciados para venda</GS.Text>
