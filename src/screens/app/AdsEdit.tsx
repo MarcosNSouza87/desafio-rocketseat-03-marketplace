@@ -17,6 +17,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { api } from '@services/api';
 import { ToastMessage } from '@components/ToastMessage';
 import { useProducts } from '@hooks/useProducts';
+import { ProductCreateDTO } from '@dtos/ProductCreateDTO';
+import { ProductDTO } from '@dtos/ProductDTO';
 
 type RouteParamsProps = {
 	productEdit: ProductDTO;
