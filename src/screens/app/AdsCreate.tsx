@@ -16,6 +16,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { api } from '@services/api';
 import { ToastMessage } from '@components/ToastMessage';
+import { ProductCreateDTO } from '@dtos/ProductCreateDTO';
 
 type FormDataProps = {
 	name: string;
@@ -66,9 +67,9 @@ export function AdsCreateScreen() {
 			const productPreview:ProductCreateDTO = {
 				...formData,
 				is_active: true,
-				product_images: [],
+				product_images: listImages,
 			}
-
+			console.log('product next ==> ',productPreview)
 			navigate('adsPreview', {productPreview });
 			//const { data } = await api.post('/products', formData);
 

@@ -1,4 +1,6 @@
-type ProductCreateDTO = {
+import { ImageDTO } from "./ImageDTO";
+
+export type ProductCreateDTO = {
 	name: string;
 	description: string;
 	is_active: boolean;
@@ -6,5 +8,5 @@ type ProductCreateDTO = {
 	price: number;
 	accept_trade: boolean;
 	payment_methods: string[];
-	product_images: any[];
+	product_images: ImageDTO[];
 }

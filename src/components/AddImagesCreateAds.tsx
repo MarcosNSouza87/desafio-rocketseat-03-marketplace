@@ -28,8 +28,6 @@ export function AddImagesCreateAds({ setImagesList }: Props) {
 
 
 	function removeItem(id: string) {
-		console.log(itens);
-		console.warn(id);
 		// Atualiza o estado e retorna a nova lista de imagens
 		setItens((prevItens) => {
 			const updatedList = prevItens.filter((item) => item.id !== id);
@@ -58,7 +56,6 @@ export function AddImagesCreateAds({ setImagesList }: Props) {
 				type: `${photoSelected.assets[0].type}/${fileExtension}`,
 			} as any;
 
-			console.log('add New item');
 			const newItem: ImagesCreateAdsProps = {
 				id: `${Date.now()}-${Math.floor(Math.random() * 1000)}`,
 				img: photoFile,

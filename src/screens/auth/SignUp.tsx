@@ -65,7 +65,6 @@ export function SignUp() {
 	const {
 		control,
 		handleSubmit,
-		getValues,
 		formState: { errors },
 	} = useForm<FormDataProps>({
 		defaultValues: {

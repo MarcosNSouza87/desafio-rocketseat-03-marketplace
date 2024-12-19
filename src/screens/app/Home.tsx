@@ -25,6 +25,8 @@ export function HomeScreen() {
 		payment_methods: [] as string[],
 	});
 
+	const [search, setSearch] = useState<string>('');
+
 	const toast = GS.useToast();
 
 	const { user } = useAuth();
@@ -37,10 +39,7 @@ export function HomeScreen() {
 		// console.log('filter');
 		setShowActionsheet(!showActionsheet);
 	}
-	async function handleMoreFilter() {
-		// console.log('filter');
-		setShowActionsheet(!showActionsheet);
-	}
+
 
 	async function handleGoDetails(info: any) {
 		// console.log('details');
@@ -50,7 +49,7 @@ export function HomeScreen() {
 	async function loadHomeInitial() {
 		try {
 			const { data } = await api.get('/products/');
-
+			setData(data);
 		} catch (error) {
 			toast.show({
 				placement: 'top',
@@ -66,9 +65,38 @@ export function HomeScreen() {
 		}
 	}
 
+	function handleResetFiltered () {
+		setFilters({
+			is_new: true, // 'novo' ou 'usado'
+			accept_trade: false,
+			payment_methods: [] as string[],
+		});
+		setData(productsGeneral);
+		setShowActionsheet(false)
+	}
+
 	useEffect(() => {
 		loadHomeInitial();
 	}, []);
+
+	useEffect(() => {
+		if (search !== '') {
+			const filterInput = data.filter((item) => item.name.includes(search));
+			setData(filterInput);
+		}else{
+			setData(productsGeneral)
+		}
+	}, [search]);
+
+	useEffect(() => {
+		console.log(filters)
+		const filterBy = data.filter((item) => 
+			item.is_new === filters.is_new || 
+			item.accept_trade === filters.accept_trade ||
+			filters.payment_methods.every(fitm => item.payment_methods.includes(fitm))
+		)
+		setData(filterBy)
+	},[filters])
 
 	return (
 		<GS.VStack flex={1} paddingHorizontal="$7">
@@ -81,7 +109,11 @@ export function HomeScreen() {
 			</GS.Text>
 
 			<GS.Input mt="$4" mb="$6">
-				<GS.InputField placeholder="Buscar anúncio" />
+				<GS.InputField
+					placeholder="Buscar anúncio"
+					value={search}
+					onChangeText={(e) => setSearch(e)}
+				/>
 				<GS.InputSlot
 					onPress={handleSearch}
 					paddingHorizontal="$2.5"
@@ -120,6 +152,7 @@ export function HomeScreen() {
 					setShowActionsheet={setShowActionsheet}
 					filter={filters}
 					setFilter={setFilters}
+					handleResetFilters={handleResetFiltered}
 				/>
 			)}
 		</GS.VStack>

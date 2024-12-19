@@ -7,6 +7,7 @@ import { ComponentProps } from 'react';
 import { Loading } from './Loading';
 import { useAuth } from '@hooks/useAuth';
 import { api } from '@services/api';
+import { ProductDTO } from '@dtos/ProductDTO';
 
 type Props = ComponentProps<typeof TouchableOpacity> & {
 	info: ProductDTO;
@@ -14,18 +15,19 @@ type Props = ComponentProps<typeof TouchableOpacity> & {
 
 export function CardAds({ info, ...rest }: Props) {
 	const { user } = useAuth();
-
-	
-
+	console.log(info.product_images[0])
+	console.log(user.avatar)
+	const cardImg = info.product_images[0].path;
+	console.log( `${api.defaults.baseURL}/images/${cardImg}`)
 	if (info) {
 		return (
 			<TouchableOpacity style={{ width: '47%', marginRight: 18 }} {...rest}>
 				<GS.VStack>
 					<GS.ImageBackground
-						source={CardExample}
+						source={{ uri: `${api.defaults.baseURL}/images/${cardImg}` }}
 						h={100}
 						p="$2"
-						alt="Logo"
+						alt="BackgroundImg"
 						resizeMode="cover"
 						imageStyle={{ borderRadius: 8 }}
 					>

@@ -11,6 +11,7 @@ import { Button } from '@components/Button';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useAuth } from '@hooks/useAuth';
 import { api } from '@services/api';
+import { ProductDTO } from '@dtos/ProductDTO';
 
 type RouteParamsProps = {
 	productDetails: ProductDTO;
@@ -23,7 +24,7 @@ type IpayMethod = {
 };
 
 export function AdsShowDetailsScreen() {
-	const [data, setData] = useState([P1, P2, P3]);
+	const [data, setData] = useState<any[]>([]);
 
 	const { navigate, goBack } = useNavigation();
 	const { width } = Dimensions.get('window');
@@ -44,7 +45,7 @@ export function AdsShowDetailsScreen() {
 	const [scrollIndex, setScrollIndex] = useState(0); // Índice da imagem visível
 
 	useEffect(() => {
-		console.log('product show  ->> ',productDetails)
+		console.log('product show  ->> ', productDetails);
 		// carrega os payments na tela
 		if (productDetails && productDetails.payment_methods) {
 			//console.log(Ads.payment_methods)
@@ -54,6 +55,7 @@ export function AdsShowDetailsScreen() {
 				),
 			);
 			setPayMethod(filteredMethods);
+			setData(productDetails.product_images);
 		}
 	}, []); // Executa quando Ads for alterado
 
@@ -74,7 +76,13 @@ export function AdsShowDetailsScreen() {
 
 	return (
 		<GS.VStack flex={1}>
-			<GS.HStack gap="$3" pt="$16" pb="$5" paddingHorizontal="$7" alignItems="center">
+			<GS.HStack
+				gap="$3"
+				pt="$16"
+				pb="$5"
+				paddingHorizontal="$7"
+				alignItems="center"
+			>
 				<GS.HStack w="$full" justifyContent="space-between">
 					<TouchableOpacity onPress={goBack}>
 						<GS.Icon as={LRN.ArrowLeft} size="xl" />
@@ -92,10 +100,10 @@ export function AdsShowDetailsScreen() {
 			<ScrollView showsVerticalScrollIndicator={false}>
 				<FlatList
 					data={data}
-					keyExtractor={(item) => item}
+					keyExtractor={(item) => item.id}
 					renderItem={({ item }) => (
 						<GS.Image
-							source={item}
+							source={{ uri: `${api.defaults.baseURL}/images/${item.path}` }}
 							alt="1"
 							width={width}
 							resizeMode="cover"

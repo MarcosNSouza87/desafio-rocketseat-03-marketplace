@@ -7,10 +7,9 @@ import defaultUserPhotoImg from '@assets/userPhotoDefault.png';
 import { UserPhoto } from './UserPhoto';
 import { Button } from './Button';
 
-import { Pencil, Plus } from 'lucide-react-native';
+import {  Plus } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
-
-import { ArrowLeft, PencilLine } from 'lucide-react-native';
+ 
 import { useAuth } from '@hooks/useAuth';
 import { api } from '@services/api';
 

@@ -15,6 +15,8 @@ import { useAuth } from '@hooks/useAuth';
 import { api } from '@services/api';
 import { ToastMessage } from '@components/ToastMessage';
 import { useProducts } from '@hooks/useProducts';
+import { ProductCreateDTO } from '@dtos/ProductCreateDTO';
+import { ImageDTO } from '@dtos/ImageDTO';
 
 type RouteParamsProps = {
 	idEdit: string;
@@ -52,6 +54,7 @@ export function AdsPreviewScreen() {
 
 	async function handlePublishProduct() {
 		try {
+			//para editar
 			if (idEdit !== undefined) {
 				await api.put(`/products/${idEdit}`, productPreview);
 				await loadProductsList();
@@ -73,7 +76,32 @@ export function AdsPreviewScreen() {
 					),
 				});
 			} else {
-				await api.post('/products', productPreview);
+				//para criar um novo
+				const respProduct = await api.post('/products', productPreview);
+
+				if(respProduct.data){
+					const productImageData: any = new FormData();
+					productImageData.append('product_id', respProduct.data.id);
+					
+					productPreview.product_images.forEach((item) => {
+						const justImage = item.img;
+						const imageFile = {
+							...justImage,
+							name: user.id + '_' + item.id,
+						} as any;
+
+						productImageData.append('images', imageFile);
+					})
+
+					console.log('product image data =< ', productImageData);
+				
+					await api.post('/products/images', productImageData , {
+						headers: {
+							'Content-Type': 'multipart/form-data',
+						},
+					});
+				}
+				
 				toast.show({
 					placement: 'top',
 					render: ({ id }) => (
@@ -94,6 +122,7 @@ export function AdsPreviewScreen() {
 				});
 			}
 		} catch (error) {
+			console.log(error);
 			toast.show({
 				placement: 'top',
 				render: ({ id }) => (
@@ -127,6 +156,9 @@ export function AdsPreviewScreen() {
 			),
 		);
 		setPayMethod(filteredMethods);
+		if(productPreview.product_images.length > 0){
+			setData(productPreview.product_images.map((item:ImageDTO) => item.img.uri))
+		}
 	}, []);
 
 	return (

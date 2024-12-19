@@ -1,4 +1,6 @@
-type ProductDTO = {
+import { ImageDTO } from "./ImageDTO";
+
+export type ProductDTO = {
 	id: string;
 	name: string;
 	description: string;

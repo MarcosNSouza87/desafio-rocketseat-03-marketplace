@@ -8,12 +8,14 @@ type Props = {
   showActionsheet: boolean;
   setShowActionsheet: (active: boolean) => void;
   setFilter: (filters: any) => void; // Função para aplicar os filtros
+  handleResetFilters: () => void;
 };
 
 export function SheetFilterHome({
   setShowActionsheet,
   showActionsheet,
   setFilter,
+  handleResetFilters
 }: Props) {
   // Inicializando o estado dos filtros
   const [filters, setFilters] = useState({
@@ -49,20 +51,11 @@ export function SheetFilterHome({
 
   // Função para aplicar os filtros
   const handleApplyFilters = () => {
-		console.log(filters)
+		// console.log(filters)
     setFilter(filters); // Passa os filtros para o componente pai
     setShowActionsheet(false); // Fecha a action sheet
   };
 
-  // Função para resetar os filtros
-  const handleResetFilters = () => {
-    setFilters({
-      is_new: true,
-      accept_trade: false,
-      payment_methods: [],
-    });
-    setShowActionsheet(false); // Fecha a action sheet
-  };
 
   return (
     <GS.Actionsheet
